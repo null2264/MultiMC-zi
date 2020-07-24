@@ -69,13 +69,14 @@ InstanceWindow::InstanceWindow(InstancePtr instance, QWidget *parent)
 
         m_killButton = new QPushButton();
         horizontalLayout->addWidget(m_killButton);
+        m_killButton->setText(tr("Launch"));
         connect(m_killButton, SIGNAL(clicked(bool)), SLOT(on_btnKillMinecraft_clicked()));
 
-        m_launchOfflineButton = new QPushButton();
+        /*m_launchOfflineButton = new QPushButton();
         horizontalLayout->addWidget(m_launchOfflineButton);
-        m_launchOfflineButton->setText(tr("Launch Offline"));
+        m_launchOfflineButton->setText(tr("LaunchOffline"));
         updateLaunchButtons();
-        connect(m_launchOfflineButton, SIGNAL(clicked(bool)), SLOT(on_btnLaunchMinecraftOffline_clicked()));
+        connect(m_launchOfflineButton, SIGNAL(clicked(bool)), SLOT(on_btnLaunchMinecraftOffline_clicked()));*/
 
         m_closeButton = new QPushButton();
         m_closeButton->setText(tr("Close"));
@@ -121,20 +122,20 @@ void InstanceWindow::updateLaunchButtons()
 {
     if(m_instance->isRunning())
     {
-        m_launchOfflineButton->setEnabled(false);
+        //m_launchOfflineButton->setEnabled(false);
         m_killButton->setText(tr("Kill"));
         m_killButton->setToolTip(tr("Kill the running instance"));
     }
     else if(!m_instance->canLaunch())
     {
-        m_launchOfflineButton->setEnabled(false);
+        //m_launchOfflineButton->setEnabled(false);
         m_killButton->setText(tr("Launch"));
         m_killButton->setToolTip(tr("Launch the instance"));
         m_killButton->setEnabled(false);
     }
     else
     {
-        m_launchOfflineButton->setEnabled(true);
+        //m_launchOfflineButton->setEnabled(true);
         m_killButton->setText(tr("Launch"));
         m_killButton->setToolTip(tr("Launch the instance"));
     }

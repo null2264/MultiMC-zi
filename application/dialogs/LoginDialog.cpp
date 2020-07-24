@@ -43,29 +43,21 @@ void LoginDialog::accept()
 
     // Setup the login task and start it
     m_account = MojangAccount::createFromUsername(ui->userTextBox->text());
-    m_loginTask = m_account->login(nullptr, ui->passTextBox->text());
-    connect(m_loginTask.get(), &Task::failed, this, &LoginDialog::onTaskFailed);
-    connect(m_loginTask.get(), &Task::succeeded, this,
-            &LoginDialog::onTaskSucceeded);
-    connect(m_loginTask.get(), &Task::status, this, &LoginDialog::onTaskStatus);
+    //m_loginTask = m_account->login(nullptr, ui->passTextBox->text());
+    LoginDialog::onTaskSucceeded();
+    /*connect(m_loginTask.get(), &Task::status, this, &LoginDialog::onTaskStatus);
     connect(m_loginTask.get(), &Task::progress, this, &LoginDialog::onTaskProgress);
-    m_loginTask->start();
+    m_loginTask->start();*/
 }
 
 void LoginDialog::setUserInputsEnabled(bool enable)
 {
     ui->userTextBox->setEnabled(enable);
-    ui->passTextBox->setEnabled(enable);
     ui->buttonBox->setEnabled(enable);
 }
 
 // Enable the OK button only when both textboxes contain something.
 void LoginDialog::on_userTextBox_textEdited(const QString &newText)
-{
-    ui->buttonBox->button(QDialogButtonBox::Ok)
-        ->setEnabled(!newText.isEmpty() && !ui->passTextBox->text().isEmpty());
-}
-void LoginDialog::on_passTextBox_textEdited(const QString &newText)
 {
     ui->buttonBox->button(QDialogButtonBox::Ok)
         ->setEnabled(!newText.isEmpty() && !ui->userTextBox->text().isEmpty());

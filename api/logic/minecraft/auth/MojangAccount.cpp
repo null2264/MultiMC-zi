@@ -99,6 +99,7 @@ MojangAccountPtr MojangAccount::createFromUsername(const QString &username)
 {
     MojangAccountPtr account(new MojangAccount());
     account->m_clientToken = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
+    account->m_accessToken = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
     account->m_username = username;
     return account;
 }
@@ -111,14 +112,14 @@ QJsonObject MojangAccount::saveToJson() const
     json.insert("accessToken", m_accessToken);
 
     QJsonArray profileArray;
-    for (AccountProfile profile : m_profiles)
-    {
-        QJsonObject profileObj;
-        profileObj.insert("id", profile.id);
-        profileObj.insert("name", profile.name);
-        profileObj.insert("legacy", profile.legacy);
-        profileArray.append(profileObj);
-    }
+    /*for (AccountProfile profile : m_profiles)
+    {*/
+    QJsonObject profileObj;
+    profileObj.insert("id", m_user.id);
+    profileObj.insert("name", m_username);
+    profileObj.insert("legacy", false);
+    profileArray.append(profileObj);
+    //}
     json.insert("profiles", profileArray);
 
     QJsonObject userStructure;

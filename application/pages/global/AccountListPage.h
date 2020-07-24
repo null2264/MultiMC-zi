@@ -73,7 +73,7 @@ slots:
 
     void on_actionNoDefault_triggered();
 
-    void on_actionUploadSkin_triggered();
+    //void on_actionUploadSkin_triggered();
 
     void listChanged();
 

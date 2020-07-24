@@ -141,7 +141,7 @@ void AccountListPage::updateButtonStates()
 
     ui->actionRemove->setEnabled(selection.size() > 0);
     ui->actionSetDefault->setEnabled(selection.size() > 0);
-    ui->actionUploadSkin->setEnabled(selection.size() > 0);
+    //ui->actionUploadSkin->setEnabled(selection.size() > 0);
 
     if(m_accounts->activeAccount().get() == nullptr) {
         ui->actionNoDefault->setEnabled(false);
@@ -180,7 +180,7 @@ void AccountListPage::addAccount(const QString &errMsg)
     }
 }
 
-void AccountListPage::on_actionUploadSkin_triggered()
+/*void AccountListPage::on_actionUploadSkin_triggered()
 {
     QModelIndexList selection = ui->listView->selectionModel()->selectedIndexes();
     if (selection.size() > 0)
@@ -190,4 +190,4 @@ void AccountListPage::on_actionUploadSkin_triggered()
         SkinUploadDialog dialog(account, this);
         dialog.exec();
     }
-}
+}*/

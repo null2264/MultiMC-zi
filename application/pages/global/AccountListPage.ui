@@ -40,7 +40,6 @@
    <addaction name="actionRemove"/>
    <addaction name="actionSetDefault"/>
    <addaction name="actionNoDefault"/>
-   <addaction name="actionUploadSkin"/>
   </widget>
   <action name="actionAdd">
    <property name="text">
@@ -63,11 +62,6 @@
    </property>
    <property name="text">
     <string>No Default</string>
-   </property>
-  </action>
-  <action name="actionUploadSkin">
-   <property name="text">
-    <string>Upload Skin</string>
    </property>
   </action>
  </widget>

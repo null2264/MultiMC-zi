@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>162</height>
+    <height>121</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,17 +36,7 @@
    <item>
     <widget class="QLineEdit" name="userTextBox">
      <property name="placeholderText">
-      <string>Email</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLineEdit" name="passTextBox">
-     <property name="echoMode">
-      <enum>QLineEdit::Password</enum>
-     </property>
-     <property name="placeholderText">
-      <string>Password</string>
+      <string>Username</string>
      </property>
     </widget>
    </item>

@@ -15,6 +15,7 @@
 #include <minecraft/auth/YggdrasilTask.h>
 #include <launch/steps/TextPrint.h>
 #include <QStringList>
+//#include "Account.h"
 
 LaunchController::LaunchController(QObject *parent) : Task(parent)
 {
@@ -36,22 +37,52 @@ void LaunchController::login()
 {
     JavaCommon::checkJVMArgs(m_instance->settings()->get("JvmArgs").toString(), m_parentWidget);
 
-    // Mojang account login bypass
-    bool ok = false;
-    QString usedname = "Player";
-    QString name = QInputDialog::getText(m_parentWidget, tr("Player name"),
-                                         tr("Choose your offline mode player name."),
-                                         QLineEdit::Normal, "Player", &ok);
-    if (!ok)
+    std::shared_ptr<MojangAccountList> accounts = MMC->accounts();
+    MojangAccountPtr account = accounts->activeAccount();
+    if (accounts->count() <= 0)
     {
+        // Tell the user they need to log in at least one account in order to play.
+        auto reply = CustomMessageBox::selectable(
+            m_parentWidget, tr("No Accounts"),
+            tr("In order to play Minecraft, you must have at least one Mojang or Minecraft "
+               "account logged in to MultiMC."
+               "Would you like to open the account manager to add an account now?"),
+            QMessageBox::Information, QMessageBox::Yes | QMessageBox::No)->exec();
+
+        if (reply == QMessageBox::Yes)
+        {
+            // Open the account manager.
+            MMC->ShowGlobalSettings(m_parentWidget, "accounts");
+        }
+    }
+    else if (account.get() == nullptr)
+    {
+        // If no default account is set, ask the user which one to use.
+        ProfileSelectDialog selectDialog(tr("Which profile would you like to use?"),
+                                         ProfileSelectDialog::GlobalDefaultCheckbox, m_parentWidget);
+
+        selectDialog.exec();
+
+        // Launch the instance with the selected account.
+        account = selectDialog.selectedAccount();
+
+        // If the user said to use the account as default, do that.
+        if (selectDialog.useAsGlobalDefault() && account.get() != nullptr)
+            accounts->setActiveAccount(account->username());
+    }
+
+    // if no account is selected, we bail
+    if (!account.get())
+    {
+        emitFailed(tr("No account selected for launch."));
         return;
     }
-    if (name.length())
-    {
-        usedname = name;
-    }
+
+    // Mojang account login bypass
+    //QString usedname = account->username();
+
     m_session = std::make_shared<AuthSession>();
-    m_session->MakeCracked(usedname);
+    m_session->MakeCracked(account->username());
 
     launchInstance();
 
