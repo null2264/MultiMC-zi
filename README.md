@@ -1,30 +1,18 @@
-**This is a "cracked" version of a popular Minecraft launcher that lets you play the game without a Mojang account.**
-This software is not related to MultiMC developers and provided without any warranty. Please don't bomb MultiMC developers if something gets wrong using this launcher.
 
-## Pre-built binaries (experimental as for now):
-- Windows x64: https://drive.google.com/file/d/1n88DfyqU7XvM0tbrnE2Ie1t8wnjDnjp_/view?usp=sharing
-- Linux x64  : https://drive.google.com/file/d/1pXnyeenFutulT7Xe66I4C8LfsICk-UCD/view?usp=sharing
-
-Details about the original launcher below:
-
-
-
-
-
-
-
-
-
-MultiMC 5
+MultiMC-zi
 =========
+
+>**DISCLAIMER: This is a "cracked" version of a popular Minecraft launcher that lets you play the game without a Mojang account.**
+>
+>This software is not related to MultiMC developers and provided without any warranty. Please don't bomb MultiMC developers if something gets wrong using this launcher.
 
 MultiMC is a custom launcher for Minecraft that allows you to easily manage multiple installations of Minecraft at once. It also allows you to easily install and remove mods by simply dragging and dropping. Here are the current [features](https://github.com/MultiMC/MultiMC5/wiki#features) of MultiMC.
 
 ## How to get it
 This project support only cloning, because it has submodules
 ```
-git clone https://github.com/AfoninZ/MultiMC5-Cracked
-cd MultiMC5-Cracked
+git clone https://github.com/null2264/MultiMC-zi
+cd MultiMC-zi
 git submodule update --init
 
 ```
