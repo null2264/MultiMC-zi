@@ -54,7 +54,7 @@
           <item>
            <widget class="QCheckBox" name="autoUpdateCheckBox">
             <property name="text">
-             <string>Check for updates when MultiMC starts?</string>
+             <string>Check for updates when the Launcher starts?</string>
             </property>
            </widget>
           </item>
@@ -180,7 +180,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>MultiMC notifications</string>
+          <string>Launcher notifications</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
@@ -506,17 +506,7 @@
           <item>
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;
-&lt;body&gt;
-&lt;p&gt;MultiMC sends anonymous usage statistics on every start of the application.&lt;/p&gt;&lt;p&gt;The following data is collected:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;MultiMC version.&lt;/li&gt;
-&lt;li&gt;Operating system name, version and architecture.&lt;/li&gt;
-&lt;li&gt;CPU architecture (kernel architecture on linux).&lt;/li&gt;
-&lt;li&gt;Size of system memory.&lt;/li&gt;
-&lt;li&gt;Java version, architecture and memory settings.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Launcher sends anonymous usage statistics on every start of the application.&lt;/p&gt;&lt;p&gt;The following data is collected:&lt;/p&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Launcher version.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Operating system name, version and architecture.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;CPU architecture (kernel architecture on linux).&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Size of system memory.&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Java version, architecture and memory settings.&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>

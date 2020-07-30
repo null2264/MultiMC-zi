@@ -334,14 +334,14 @@ public:
         actionAbout->setObjectName(QStringLiteral("actionAbout"));
         actionAbout->setIcon(MMC->getThemedIcon("about"));
         actionAbout->setMenuRole(QAction::AboutRole);
-        actionAbout.setTextId(QT_TRANSLATE_NOOP("MainWindow", "About MultiMC"));
-        actionAbout.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "View information about MultiMC."));
+        actionAbout.setTextId(QT_TRANSLATE_NOOP("MainWindow", "About Launcher"));
+        actionAbout.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "View information about Launcher."));
         all_actions.append(&actionAbout);
         helpMenu->addAction(actionAbout);
 
         helpMenuButton = TranslatedToolButton(MainWindow);
         helpMenuButton.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Help"));
-        helpMenuButton.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Get help with MultiMC or Minecraft."));
+        helpMenuButton.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Get help with the Launcher or Minecraft."));
         helpMenuButton->setMenu(helpMenu);
         helpMenuButton->setPopupMode(QToolButton::InstantPopup);
         helpMenuButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
@@ -418,7 +418,7 @@ public:
         actionMoreNews->setObjectName(QStringLiteral("actionMoreNews"));
         actionMoreNews->setIcon(MMC->getThemedIcon("news"));
         actionMoreNews.setTextId(QT_TRANSLATE_NOOP("MainWindow", "More news..."));
-        actionMoreNews.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the MultiMC development blog to read more news about MultiMC."));
+        actionMoreNews.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the Launcher development blog to read more news about MultiMC."));
         all_actions.append(&actionMoreNews);
         newsToolBar->addAction(actionMoreNews);
 
@@ -440,7 +440,7 @@ public:
         // NOTE: not added to toolbar, but used for instance context menu (right click)
         actionChangeInstIcon = TranslatedAction(MainWindow);
         actionChangeInstIcon->setObjectName(QStringLiteral("actionChangeInstIcon"));
-        actionChangeInstIcon->setIcon(QIcon(":/icons/instances/infinity"));
+        actionChangeInstIcon->setIcon(QIcon(":/icons/instances/world"));
         actionChangeInstIcon->setIconVisibleInMenu(true);
         actionChangeInstIcon.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Change Icon"));
         actionChangeInstIcon.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Change the selected instance's icon."));
@@ -577,9 +577,9 @@ public:
         }
         MainWindow->resize(800, 600);
         MainWindow->setWindowIcon(MMC->getThemedIcon("logo"));
-        MainWindow->setWindowTitle("MultiMC 5");
+        MainWindow->setWindowTitle("Unnamed Launcher");
 #ifndef QT_NO_ACCESSIBILITY
-        MainWindow->setAccessibleName("MultiMC");
+        MainWindow->setAccessibleName("Launcher");
 #endif
 
         createMainToolbar(MainWindow);
@@ -604,7 +604,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        QString winTitle = tr("MultiMC 5 - Version %1").arg(BuildConfig.printableVersionString());
+        QString winTitle = tr("Unnamed Launcher - Version %1").arg(BuildConfig.printableVersionString());
         if (!BuildConfig.BUILD_PLATFORM.isEmpty())
         {
             winTitle += tr(" on %1", "on platform, as in operating system").arg(BuildConfig.BUILD_PLATFORM);
@@ -884,7 +884,7 @@ void MainWindow::showInstanceContextMenu(const QPoint &pos)
     {
         auto group = view->groupNameAt(pos);
 
-        QAction *actionVoid = new QAction("MultiMC", this);
+        QAction *actionVoid = new QAction("Launcher", this);
         actionVoid->setEnabled(false);
 
         QAction *actionCreateInstance = new QAction(tr("Create instance"), this);
@@ -1389,7 +1389,7 @@ void MainWindow::finalizeInstance(InstancePtr inst)
     }
     else
     {
-        CustomMessageBox::selectable(this, tr("Error"), tr("MultiMC cannot download Minecraft or update instances unless you have at least "
+        CustomMessageBox::selectable(this, tr("Error"), tr("The launcher cannot download Minecraft or update instances unless you have at least "
                                                            "one account added.\nPlease add your Mojang or Minecraft account."),
                                      QMessageBox::Warning)
             ->show();
@@ -1872,7 +1872,7 @@ void MainWindow::selectionBad()
     statusBar()->clearMessage();
     ui->instanceToolBar->setEnabled(false);
     ui->renameButton->setText(tr("Rename Instance"));
-    updateInstanceToolIcon("infinity");
+    updateInstanceToolIcon("world");
 
     // ...and then see if we can enable the previously selected instance
     setSelectedInstanceById(MMC->settings()->get("SelectedInstance").toString());
