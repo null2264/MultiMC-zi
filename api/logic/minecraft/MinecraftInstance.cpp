@@ -1,5 +1,5 @@
 #include "MinecraftInstance.h"
-#include <minecraft/launch/CreateServerResourcePacksFolder.h>
+#include <minecraft/launch/CreateGameFolders.h>
 #include <minecraft/launch/ExtractNatives.h>
 #include <minecraft/launch/PrintInstanceInfo.h>
 #include <settings/Setting.h>
@@ -12,6 +12,7 @@
 #include <java/JavaVersion.h>
 
 #include "launch/LaunchTask.h"
+#include "launch/steps/LookupServerAddress.h"
 #include "launch/steps/PostLaunchCommand.h"
 #include "launch/steps/Update.h"
 #include "launch/steps/PreLaunchCommand.h"
@@ -28,6 +29,8 @@
 #include "meta/VersionList.h"
 
 #include "mod/ModFolderModel.h"
+#include "mod/ResourcePackFolderModel.h"
+#include "mod/TexturePackFolderModel.h"
 #include "WorldList.h"
 
 #include "icons/IIconList.h"
@@ -38,6 +41,7 @@
 #include "MinecraftUpdate.h"
 #include "MinecraftLoadAndCheck.h"
 #include <minecraft/gameoptions/GameOptions.h>
+#include <minecraft/update/FoldersTask.h>
 
 #define IBUS "@im=ibus"
 
@@ -99,6 +103,20 @@ MinecraftInstance::MinecraftInstance(SettingsObjectPtr globalSettings, SettingsO
     // Minecraft launch method
     auto launchMethodOverride = m_settings->registerSetting("OverrideMCLaunchMethod", false);
     m_settings->registerOverride(globalSettings->getSetting("MCLaunchMethod"), launchMethodOverride);
+
+    // Native library workarounds
+    auto nativeLibraryWorkaroundsOverride = m_settings->registerSetting("OverrideNativeWorkarounds", false);
+    m_settings->registerOverride(globalSettings->getSetting("UseNativeOpenAL"), nativeLibraryWorkaroundsOverride);
+    m_settings->registerOverride(globalSettings->getSetting("UseNativeGLFW"), nativeLibraryWorkaroundsOverride);
+
+    // Game time
+    auto gameTimeOverride = m_settings->registerSetting("OverrideGameTime", false);
+    m_settings->registerOverride(globalSettings->getSetting("ShowGameTime"), gameTimeOverride);
+    m_settings->registerOverride(globalSettings->getSetting("RecordGameTime"), gameTimeOverride);
+
+    // Join server on launch, this does not have a global override
+    m_settings->registerSetting("JoinServerOnLaunch", false);
+    m_settings->registerSetting("JoinServerOnLaunchAddress", "");
 
     // DEPRECATED: Read what versions the user configuration thinks should be used
     m_settings->registerSetting({"IntendedVersion", "MinecraftVersion"}, "");
@@ -384,13 +402,20 @@ static QString replaceTokensIn(QString text, QMap<QString, QString> with)
     return result;
 }
 
-QStringList MinecraftInstance::processMinecraftArgs(AuthSessionPtr session) const
+QStringList MinecraftInstance::processMinecraftArgs(
+        AuthSessionPtr session, MinecraftServerTargetPtr serverToJoin) const
 {
     auto profile = m_components->getProfile();
     QString args_pattern = profile->getMinecraftArguments();
     for (auto tweaker : profile->getTweakers())
     {
         args_pattern += " --tweakClass " + tweaker;
+    }
+
+    if (serverToJoin && !serverToJoin->address.isEmpty())
+    {
+        args_pattern += " --server " + serverToJoin->address;
+        args_pattern += " --port " + QString::number(serverToJoin->port);
     }
 
     QMap<QString, QString> token_mapping;
@@ -429,7 +454,7 @@ QStringList MinecraftInstance::processMinecraftArgs(AuthSessionPtr session) cons
     return parts;
 }
 
-QString MinecraftInstance::createLaunchScript(AuthSessionPtr session)
+QString MinecraftInstance::createLaunchScript(AuthSessionPtr session, MinecraftServerTargetPtr serverToJoin)
 {
     QString launchScript;
 
@@ -450,8 +475,17 @@ QString MinecraftInstance::createLaunchScript(AuthSessionPtr session)
         launchScript += "appletClass " + appletClass + "\n";
     }
 
+    if (serverToJoin && !serverToJoin->address.isEmpty())
+    {
+        launchScript += "serverAddress " + serverToJoin->address + "\n";
+        launchScript += "serverPort " + QString::number(serverToJoin->port) + "\n";
+    }
+
     // generic minecraft params
-    for (auto param : processMinecraftArgs(session))
+    for (auto param : processMinecraftArgs(
+            session,
+            nullptr /* When using a launch script, the server parameters are handled by it*/
+    ))
     {
         launchScript += "param " + param + "\n";
     }
@@ -501,7 +535,7 @@ QString MinecraftInstance::createLaunchScript(AuthSessionPtr session)
     return launchScript;
 }
 
-QStringList MinecraftInstance::verboseDescription(AuthSessionPtr session)
+QStringList MinecraftInstance::verboseDescription(AuthSessionPtr session, MinecraftServerTargetPtr serverToJoin)
 {
     QStringList out;
     out << "Main Class:" << "  " + getMainClass() << "";
@@ -520,11 +554,23 @@ QStringList MinecraftInstance::verboseDescription(AuthSessionPtr session)
         out << "";
     }
 
+    auto settings = this->settings();
+    bool nativeOpenAL = settings->get("UseNativeOpenAL").toBool();
+    bool nativeGLFW = settings->get("UseNativeGLFW").toBool();
+    if (nativeOpenAL || nativeGLFW)
+    {
+        if (nativeOpenAL)
+            out << "Using system OpenAL.";
+        if (nativeGLFW)
+            out << "Using system GLFW.";
+        out << "";
+    }
+
     // libraries and class path.
     {
         out << "Libraries:";
         QStringList jars, nativeJars;
-        auto javaArchitecture = settings()->get("JavaArchitecture").toString();
+        auto javaArchitecture = settings->get("JavaArchitecture").toString();
         profile->getLibraryFiles(javaArchitecture, jars, nativeJars, getLocalLibraryPath(), binRoot());
         auto printLibFile = [&](const QString & path)
         {
@@ -604,20 +650,20 @@ QStringList MinecraftInstance::verboseDescription(AuthSessionPtr session)
         out << "";
     }
 
-    auto params = processMinecraftArgs(nullptr);
+    auto params = processMinecraftArgs(nullptr, serverToJoin);
     out << "Params:";
     out << "  " + params.join(' ');
     out << "";
 
     QString windowParams;
-    if (settings()->get("LaunchMaximized").toBool())
+    if (settings->get("LaunchMaximized").toBool())
     {
         out << "Window size: max (if available)";
     }
     else
     {
-        auto width = settings()->get("MinecraftWinWidth").toInt();
-        auto height = settings()->get("MinecraftWinHeight").toInt();
+        auto width = settings->get("MinecraftWinWidth").toInt();
+        auto height = settings->get("MinecraftWinHeight").toInt();
         out << "Window size: " + QString::number(width) + " x " + QString::number(height);
     }
     out << "";
@@ -751,7 +797,7 @@ QString MinecraftInstance::getStatusbarDescription()
 
     QString description;
     description.append(tr("Minecraft %1 (%2)").arg(m_components->getComponentVersion("net.minecraft")).arg(typeName()));
-    if(totalTimePlayed() > 0)
+    if(m_settings->get("ShowGameTime").toBool() && totalTimePlayed() > 0)
     {
         description.append(tr(", played for %1").arg(prettifyTimeDuration(totalTimePlayed())));
     }
@@ -778,7 +824,7 @@ shared_qobject_ptr<Task> MinecraftInstance::createUpdateTask(Net::Mode mode)
     return nullptr;
 }
 
-shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPtr session)
+shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPtr session, MinecraftServerTargetPtr serverToJoin)
 {
     // FIXME: get rid of shared_from_this ...
     auto process = LaunchTask::create(std::dynamic_pointer_cast<MinecraftInstance>(shared_from_this()));
@@ -803,6 +849,26 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
     {
         process->appendStep(new TextPrint(pptr, "Selected launch method \"" + method + "\" is not valid.\n", MessageLevel::Fatal));
         return process;
+    }
+
+    // create the .minecraft folder and server-resource-packs (workaround for Minecraft bug MCL-3732)
+    {
+        process->appendStep(new CreateGameFolders(pptr));
+    }
+
+    if (!serverToJoin && m_settings->get("JoinServerOnLaunch").toBool())
+    {
+        QString fullAddress = m_settings->get("JoinServerOnLaunchAddress").toString();
+        serverToJoin.reset(new MinecraftServerTarget(MinecraftServerTarget::parse(fullAddress)));
+    }
+
+    if(serverToJoin && serverToJoin->port == 25565)
+    {
+        // Resolve server address to join on launch
+        auto *step = new LookupServerAddress(pptr);
+        step->setLookupAddress(serverToJoin->address);
+        step->setOutputAddressPtr(serverToJoin);
+        process->appendStep(step);
     }
 
     // run pre-launch command if that's needed
@@ -830,19 +896,14 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
         process->appendStep(new ModMinecraftJar(pptr));
     }
 
-    // if there are any jar mods
+    // Scan mods folders for mods
     {
         process->appendStep(new ScanModFolders(pptr));
     }
 
     // print some instance info here...
     {
-        process->appendStep(new PrintInstanceInfo(pptr, session));
-    }
-
-    // create the server-resource-packs folder (workaround for Minecraft bug MCL-3732)
-    {
-        process->appendStep(new CreateServerResourcePacksFolder(pptr));
+        process->appendStep(new PrintInstanceInfo(pptr, session, serverToJoin));
     }
 
     // extract native jars if needed
@@ -863,6 +924,7 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
             auto step = new LauncherPartLaunch(pptr);
             step->setWorkingDirectory(gameRoot());
             step->setAuthSession(session);
+            step->setServerToJoin(serverToJoin);
             process->appendStep(step);
         }
         else if (method == "DirectJava")
@@ -870,6 +932,7 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
             auto step = new DirectJavaLaunch(pptr);
             step->setWorkingDirectory(gameRoot());
             step->setAuthSession(session);
+            step->setServerToJoin(serverToJoin);
             process->appendStep(step);
         }
     }
@@ -926,7 +989,7 @@ std::shared_ptr<ModFolderModel> MinecraftInstance::resourcePackList() const
 {
     if (!m_resource_pack_list)
     {
-        m_resource_pack_list.reset(new ModFolderModel(resourcePacksDir()));
+        m_resource_pack_list.reset(new ResourcePackFolderModel(resourcePacksDir()));
         m_resource_pack_list->disableInteraction(isRunning());
         connect(this, &BaseInstance::runningStatusChanged, m_resource_pack_list.get(), &ModFolderModel::disableInteraction);
     }
@@ -937,7 +1000,7 @@ std::shared_ptr<ModFolderModel> MinecraftInstance::texturePackList() const
 {
     if (!m_texture_pack_list)
     {
-        m_texture_pack_list.reset(new ModFolderModel(texturePacksDir()));
+        m_texture_pack_list.reset(new TexturePackFolderModel(texturePacksDir()));
         m_texture_pack_list->disableInteraction(isRunning());
         connect(this, &BaseInstance::runningStatusChanged, m_texture_pack_list.get(), &ModFolderModel::disableInteraction);
     }

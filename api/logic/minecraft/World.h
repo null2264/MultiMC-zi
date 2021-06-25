@@ -1,4 +1,4 @@
-/* Copyright 2015-2019 MultiMC Contributors
+/* Copyright 2015-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,27 @@
 #pragma once
 #include <QFileInfo>
 #include <QDateTime>
+#include <nonstd/optional>
 
 #include "multimc_logic_export.h"
 
-enum class GameType
-{
-    Survival,
-    Creative,
-    Adventure,
-    Spectator
+struct MULTIMC_LOGIC_EXPORT GameType {
+    GameType() = default;
+    GameType (nonstd::optional<int> original);
+
+    QString toTranslatedString() const;
+    QString toLogString() const;
+
+    enum
+    {
+        Unknown = -1,
+        Survival = 0,
+        Creative,
+        Adventure,
+        Spectator
+    } type = Unknown;
+    nonstd::optional<int> original;
 };
-QString MULTIMC_LOGIC_EXPORT gameTypeToString(GameType type);
 
 class MULTIMC_LOGIC_EXPORT World
 {
@@ -39,6 +49,10 @@ public:
     QString name() const
     {
         return m_actualName;
+    }
+    QString iconFile() const
+    {
+        return m_iconFile;
     }
     QDateTime lastPlayed() const
     {
@@ -70,6 +84,8 @@ public:
     bool replace(World &with);
     // change the world's filesystem path (used by world lists for *MAGIC* purposes)
     void repath(const QFileInfo &file);
+    // remove the icon file, if any
+    bool resetIcon();
 
     bool rename(const QString &to);
     bool install(const QString &to, const QString &name= QString());
@@ -88,9 +104,10 @@ protected:
     QString m_containerOffsetPath;
     QString m_folderName;
     QString m_actualName;
+    QString m_iconFile;
     QDateTime levelDatTime;
     QDateTime m_lastPlayed;
     int64_t m_randomSeed = 0;
-    GameType m_gameType = GameType::Survival;
+    GameType m_gameType;
     bool is_valid = false;
 };

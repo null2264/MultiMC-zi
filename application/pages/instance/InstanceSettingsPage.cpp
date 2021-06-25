@@ -163,6 +163,46 @@ void InstanceSettingsPage::applySettings()
         m_settings->reset("WrapperCommand");
         m_settings->reset("PostExitCommand");
     }
+
+    // Workarounds
+    bool workarounds = ui->nativeWorkaroundsGroupBox->isChecked();
+    m_settings->set("OverrideNativeWorkarounds", workarounds);
+    if(workarounds)
+    {
+        m_settings->set("UseNativeOpenAL", ui->useNativeOpenALCheck->isChecked());
+        m_settings->set("UseNativeGLFW", ui->useNativeGLFWCheck->isChecked());
+    }
+    else
+    {
+        m_settings->reset("UseNativeOpenAL");
+        m_settings->reset("UseNativeGLFW");
+    }
+
+    // Game time
+    bool gameTime = ui->gameTimeGroupBox->isChecked();
+    m_settings->set("OverrideGameTime", gameTime);
+    if (gameTime)
+    {
+        m_settings->set("ShowGameTime", ui->showGameTime->isChecked());
+        m_settings->set("RecordGameTime", ui->recordGameTime->isChecked());
+    }
+    else
+    {
+        m_settings->reset("ShowGameTime");
+        m_settings->reset("RecordGameTime");
+    }
+
+    // Join server on launch
+    bool joinServerOnLaunch = ui->serverJoinGroupBox->isChecked();
+    m_settings->set("JoinServerOnLaunch", joinServerOnLaunch);
+    if (joinServerOnLaunch)
+    {
+        m_settings->set("JoinServerOnLaunchAddress", ui->serverJoinAddress->text());
+    }
+    else
+    {
+        m_settings->reset("JoinServerOnLaunchAddress");
+    }
 }
 
 void InstanceSettingsPage::loadSettings()
@@ -219,6 +259,19 @@ void InstanceSettingsPage::loadSettings()
         m_settings->get("WrapperCommand").toString(),
         m_settings->get("PostExitCommand").toString()
     );
+
+    // Workarounds
+    ui->nativeWorkaroundsGroupBox->setChecked(m_settings->get("OverrideNativeWorkarounds").toBool());
+    ui->useNativeGLFWCheck->setChecked(m_settings->get("UseNativeGLFW").toBool());
+    ui->useNativeOpenALCheck->setChecked(m_settings->get("UseNativeOpenAL").toBool());
+
+    // Miscellanous
+    ui->gameTimeGroupBox->setChecked(m_settings->get("OverrideGameTime").toBool());
+    ui->showGameTime->setChecked(m_settings->get("ShowGameTime").toBool());
+    ui->recordGameTime->setChecked(m_settings->get("RecordGameTime").toBool());
+
+    ui->serverJoinGroupBox->setChecked(m_settings->get("JoinServerOnLaunch").toBool());
+    ui->serverJoinAddress->setText(m_settings->get("JoinServerOnLaunchAddress").toString());
 }
 
 void InstanceSettingsPage::on_javaDetectBtn_clicked()

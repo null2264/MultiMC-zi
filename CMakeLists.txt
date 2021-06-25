@@ -78,6 +78,15 @@ set(MultiMC_PASTE_EE_API_KEY "utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ" CACHE S
 # Google analytics ID
 set(MultiMC_ANALYTICS_ID "UA-87731965-2" CACHE STRING "ID you can get from Google analytics")
 
+# Bug tracker URL
+set(MultiMC_BUG_TRACKER_URL "" CACHE STRING "URL for the bug tracker.")
+
+# Discord URL
+set(MultiMC_DISCORD_URL "" CACHE STRING "URL for the Discord guild.")
+
+# Subreddit URL
+set(MultiMC_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")
+
 #### Check the current Git commit and branch
 include(GetGitRevisionDescription)
 get_git_head_revision(MultiMC_GIT_REFSPEC MultiMC_GIT_COMMIT)
@@ -154,7 +163,7 @@ if(MultiMC_LAYOUT_REAL STREQUAL "mac-bundle")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${MultiMC_VERSION_MAJOR}.${MultiMC_VERSION_MINOR}.${MultiMC_VERSION_HOTFIX}.${MultiMC_VERSION_BUILD}")
     set(MACOSX_BUNDLE_LONG_VERSION_STRING "${MultiMC_VERSION_MAJOR}.${MultiMC_VERSION_MINOR}.${MultiMC_VERSION_HOTFIX}.${MultiMC_VERSION_BUILD}")
     set(MACOSX_BUNDLE_ICON_FILE MultiMC.icns)
-    set(MACOSX_BUNDLE_COPYRIGHT "Copyright 2015-2019 MultiMC Contributors")
+    set(MACOSX_BUNDLE_COPYRIGHT "Copyright 2015-2021 MultiMC Contributors")
 
     # directories to look for dependencies
     set(DIRS ${QT_LIBS_DIR} ${QT_LIBEXECS_DIR} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
@@ -264,6 +273,8 @@ add_subdirectory(libraries/rainbow) # Qt extension for colors
 add_subdirectory(libraries/iconfix) # fork of Qt's QIcon loader
 add_subdirectory(libraries/LocalPeer) # fork of a library from Qt solutions
 add_subdirectory(libraries/classparser) # google analytics library
+add_subdirectory(libraries/optional-bare)
+add_subdirectory(libraries/tomlc99) # toml parser
 
 ############################### Built Artifacts ###############################
 

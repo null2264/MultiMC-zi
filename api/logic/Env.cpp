@@ -96,8 +96,11 @@ void Env::initHttpMetaCache()
     m_metacache->addBase("fmllibs", QDir("mods/minecraftforge/libs").absolutePath());
     m_metacache->addBase("liteloader", QDir("mods/liteloader").absolutePath());
     m_metacache->addBase("general", QDir("cache").absolutePath());
+    m_metacache->addBase("ATLauncherPacks", QDir("cache/ATLauncherPacks").absolutePath());
     m_metacache->addBase("FTBPacks", QDir("cache/FTBPacks").absolutePath());
-    m_metacache->addBase("TwitchPacks", QDir("cache/TwitchPacks").absolutePath());
+    m_metacache->addBase("ModpacksCHPacks", QDir("cache/ModpacksCHPacks").absolutePath());
+    m_metacache->addBase("TechnicPacks", QDir("cache/TechnicPacks").absolutePath());
+    m_metacache->addBase("FlamePacks", QDir("cache/FlamePacks").absolutePath());
     m_metacache->addBase("skins", QDir("accounts/skins").absolutePath());
     m_metacache->addBase("root", QDir::currentPath());
     m_metacache->addBase("translations", QDir("translations").absolutePath());
@@ -160,11 +163,9 @@ void Env::updateProxySettings(QString proxyTypeStr, QString addr, int port, QStr
         proxyDesc = "DERP proxy: ";
         break;
     }
-    proxyDesc += QString("%3@%1:%2 pass %4")
+    proxyDesc += QString("%1:%2")
                      .arg(proxy.hostName())
-                     .arg(proxy.port())
-                     .arg(proxy.user())
-                     .arg(proxy.password());
+                     .arg(proxy.port());
     qDebug() << proxyDesc;
 }
 

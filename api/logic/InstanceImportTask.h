@@ -1,3 +1,18 @@
+/* Copyright 2013-2021 MultiMC Contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #pragma once
 
 #include "InstanceTask.h"
@@ -8,6 +23,8 @@
 #include <QFutureWatcher>
 #include "settings/SettingsObject.h"
 #include "QObjectPtr.h"
+
+#include <nonstd/optional>
 
 class QuaZip;
 namespace Flame
@@ -29,6 +46,7 @@ private:
     void processZipPack();
     void processMultiMC();
     void processFlame();
+    void processTechnic();
 
 private slots:
     void downloadSucceeded();
@@ -44,11 +62,12 @@ private: /* data */
     QString m_archivePath;
     bool m_downloadRequired = false;
     std::unique_ptr<QuaZip> m_packZip;
-    QFuture<QStringList> m_extractFuture;
-    QFutureWatcher<QStringList> m_extractFutureWatcher;
+    QFuture<nonstd::optional<QStringList>> m_extractFuture;
+    QFutureWatcher<nonstd::optional<QStringList>> m_extractFutureWatcher;
     enum class ModpackType{
         Unknown,
         MultiMC,
-        Flame
+        Flame,
+        Technic
     } m_modpackType = ModpackType::Unknown;
 };

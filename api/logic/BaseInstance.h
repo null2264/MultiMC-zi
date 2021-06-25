@@ -1,4 +1,4 @@
-/* Copyright 2013-2019 MultiMC Contributors
+/* Copyright 2013-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@
 #include "net/Mode.h"
 
 #include "multimc_logic_export.h"
+
+#include "minecraft/launch/MinecraftServerTarget.h"
 
 class QDir;
 class Task;
@@ -145,7 +147,8 @@ public:
     virtual shared_qobject_ptr<Task> createUpdateTask(Net::Mode mode) = 0;
 
     /// returns a valid launcher (task container)
-    virtual shared_qobject_ptr<LaunchTask> createLaunchTask(AuthSessionPtr account) = 0;
+    virtual shared_qobject_ptr<LaunchTask> createLaunchTask(
+            AuthSessionPtr account, MinecraftServerTargetPtr serverToJoin) = 0;
 
     /// returns the current launch task (if any)
     shared_qobject_ptr<LaunchTask> getLaunchTask();
@@ -221,9 +224,9 @@ public:
     bool reloadSettings();
 
     /**
-     * 'print' a verbose desription of the instance into a QStringList
+     * 'print' a verbose description of the instance into a QStringList
      */
-    virtual QStringList verboseDescription(AuthSessionPtr session) = 0;
+    virtual QStringList verboseDescription(AuthSessionPtr session, MinecraftServerTargetPtr serverToJoin) = 0;
 
     Status currentStatus() const;
 

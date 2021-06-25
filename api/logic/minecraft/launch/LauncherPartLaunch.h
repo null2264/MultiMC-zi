@@ -1,4 +1,4 @@
-/* Copyright 2013-2019 MultiMC Contributors
+/* Copyright 2013-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 #include <launch/LaunchStep.h>
 #include <LoggedProcess.h>
 #include <minecraft/auth/AuthSession.h>
+
+#include "MinecraftServerTarget.h"
 
 class LauncherPartLaunch: public LaunchStep
 {
@@ -39,6 +41,11 @@ public:
         m_session = session;
     }
 
+    void setServerToJoin(MinecraftServerTargetPtr serverToJoin)
+    {
+        m_serverToJoin = std::move(serverToJoin);
+    }
+
 private slots:
     void on_state(LoggedProcess::State state);
 
@@ -47,5 +54,7 @@ private:
     QString m_command;
     AuthSessionPtr m_session;
     QString m_launchScript;
+    MinecraftServerTargetPtr m_serverToJoin;
+
     bool mayProceed = false;
 };

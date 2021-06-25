@@ -1,4 +1,4 @@
-/* Copyright 2013-2019 MultiMC Contributors
+/* Copyright 2013-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,16 @@ void ScanModFolders::executeTask()
 
     auto loaders = m_inst->loaderModList();
     connect(loaders.get(), &ModFolderModel::updateFinished, this, &ScanModFolders::modsDone);
-    loaders->update();
+    if(!loaders->update()) {
+        m_modsDone = true;
+    }
 
     auto cores = m_inst->coreModList();
     connect(cores.get(), &ModFolderModel::updateFinished, this, &ScanModFolders::coreModsDone);
-    cores->update();
+    if(!cores->update()) {
+        m_coreModsDone = true;
+    }
+    checkDone();
 }
 
 void ScanModFolders::modsDone()

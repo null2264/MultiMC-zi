@@ -1,4 +1,4 @@
-/* Copyright 2013-2019 MultiMC Contributors
+/* Copyright 2013-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,6 +86,7 @@ protected:
 
 private:
     Ui::VersionPage *ui;
+    QSortFilterProxyModel *m_filterModel;
     std::shared_ptr<PackProfile> m_profile;
     MinecraftInstance *m_inst;
     int currentIdx = 0;
@@ -98,5 +99,6 @@ private slots:
     void updateRunningStatus(bool running);
     void onGameUpdateError(QString error);
     void packageCurrent(const QModelIndex &current, const QModelIndex &previous);
-    void ShowContextMenu(const QPoint &pos);
+    void showContextMenu(const QPoint &pos);
+    void onFilterTextChanged(const QString & newContents);
 };

@@ -124,15 +124,38 @@ SET(MULTIMC_SOURCES
     # GUI - platform pages
     pages/modplatform/VanillaPage.cpp
     pages/modplatform/VanillaPage.h
+
+    pages/modplatform/atlauncher/AtlFilterModel.cpp
+    pages/modplatform/atlauncher/AtlFilterModel.h
+    pages/modplatform/atlauncher/AtlListModel.cpp
+    pages/modplatform/atlauncher/AtlListModel.h
+    pages/modplatform/atlauncher/AtlOptionalModDialog.cpp
+    pages/modplatform/atlauncher/AtlOptionalModDialog.h
+    pages/modplatform/atlauncher/AtlPage.cpp
+    pages/modplatform/atlauncher/AtlPage.h
+
+    pages/modplatform/ftb/FtbFilterModel.cpp
+    pages/modplatform/ftb/FtbFilterModel.h
+    pages/modplatform/ftb/FtbListModel.cpp
+    pages/modplatform/ftb/FtbListModel.h
+    pages/modplatform/ftb/FtbPage.cpp
+    pages/modplatform/ftb/FtbPage.h
+
     pages/modplatform/legacy_ftb/Page.cpp
     pages/modplatform/legacy_ftb/Page.h
     pages/modplatform/legacy_ftb/ListModel.h
     pages/modplatform/legacy_ftb/ListModel.cpp
-    pages/modplatform/twitch/TwitchData.h
-    pages/modplatform/twitch/TwitchModel.cpp
-    pages/modplatform/twitch/TwitchModel.h
-    pages/modplatform/twitch/TwitchPage.cpp
-    pages/modplatform/twitch/TwitchPage.h
+
+    pages/modplatform/flame/FlameModel.cpp
+    pages/modplatform/flame/FlameModel.h
+    pages/modplatform/flame/FlamePage.cpp
+    pages/modplatform/flame/FlamePage.h
+
+    pages/modplatform/technic/TechnicModel.cpp
+    pages/modplatform/technic/TechnicModel.h
+    pages/modplatform/technic/TechnicPage.cpp
+    pages/modplatform/technic/TechnicPage.h
+
     pages/modplatform/ImportPage.cpp
     pages/modplatform/ImportPage.h
 
@@ -250,9 +273,15 @@ SET(MULTIMC_UIS
 
     # Platform pages
     pages/modplatform/VanillaPage.ui
+    pages/modplatform/atlauncher/AtlPage.ui
+    pages/modplatform/ftb/FtbPage.ui
     pages/modplatform/legacy_ftb/Page.ui
-    pages/modplatform/twitch/TwitchPage.ui
+    pages/modplatform/flame/FlamePage.ui
+    pages/modplatform/technic/TechnicPage.ui
     pages/modplatform/ImportPage.ui
+
+    # Platform Dialogs
+    pages/modplatform/atlauncher/AtlOptionalModDialog.ui
 
     # Dialogs
     dialogs/CopyInstanceDialog.ui

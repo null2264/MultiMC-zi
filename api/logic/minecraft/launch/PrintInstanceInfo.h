@@ -1,4 +1,4 @@
-/* Copyright 2013-2019 MultiMC Contributors
+/* Copyright 2013-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@
 #include <launch/LaunchStep.h>
 #include <memory>
 #include "minecraft/auth/AuthSession.h"
+#include "minecraft/launch/MinecraftServerTarget.h"
 
 // FIXME: temporary wrapper for existing task.
 class PrintInstanceInfo: public LaunchStep
 {
     Q_OBJECT
 public:
-    explicit PrintInstanceInfo(LaunchTask *parent, AuthSessionPtr session) : LaunchStep(parent), m_session(session) {};
+    explicit PrintInstanceInfo(LaunchTask *parent, AuthSessionPtr session, MinecraftServerTargetPtr serverToJoin) :
+        LaunchStep(parent), m_session(session), m_serverToJoin(serverToJoin) {};
     virtual ~PrintInstanceInfo(){};
 
     virtual void executeTask();
@@ -34,5 +36,6 @@ public:
     }
 private:
     AuthSessionPtr m_session;
+    MinecraftServerTargetPtr m_serverToJoin;
 };
 

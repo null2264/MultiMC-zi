@@ -65,17 +65,24 @@ public:
      */
     QString META_URL;
 
+    QString BUG_TRACKER_URL;
+    QString DISCORD_URL;
+    QString SUBREDDIT_URL;
+
     QString RESOURCE_BASE = "https://resources.download.minecraft.net/";
     QString LIBRARY_BASE = "https://libraries.minecraft.net/";
     QString SKINS_BASE = "https://crafatar.com/skins/";
     QString AUTH_BASE = "https://authserver.mojang.com/";
     QString MOJANG_STATUS_URL = "https://status.mojang.com/check";
     QString IMGUR_BASE_URL = "https://api.imgur.com/3/";
-    QString FMLLIBS_OUR_BASE_URL = "https://files.multimc.org/fmllibs/";
-    QString FMLLIBS_FORGE_BASE_URL = "https://files.minecraftforge.net/fmllibs/";
+    QString FMLLIBS_BASE_URL = "https://files.multimc.org/fmllibs/";
     QString TRANSLATIONS_BASE_URL = "https://files.multimc.org/translations/";
 
+    QString MODPACKSCH_API_BASE_URL = "https://api.modpacks.ch/";
+
     QString LEGACY_FTB_CDN_BASE_URL = "https://dist.creeper.host/FTB2/";
+
+    QString ATL_DOWNLOAD_SERVER_URL = "https://download.nodecdn.net/containers/atl/";
 
     /**
      * \brief Converts the Version to a string.

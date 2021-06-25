@@ -1,4 +1,4 @@
-/* Copyright 2015-2019 MultiMC Contributors
+/* Copyright 2015-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,8 @@ public:
         SeedRole,
         NameRole,
         GameModeRole,
-        LastPlayedRole
+        LastPlayedRole,
+        IconFileRole
     };
 
     WorldList(const QString &dir);
@@ -80,6 +81,9 @@ public:
 
     /// Deletes the mod at the given index.
     virtual bool deleteWorld(int index);
+
+    /// Removes the world icon, if any
+    virtual bool resetIcon(int index);
 
     /// Deletes all the selected mods
     virtual bool deleteWorlds(int first, int last);

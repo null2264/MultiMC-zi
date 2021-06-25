@@ -1,4 +1,4 @@
-/* Copyright 2013-2019 MultiMC Contributors
+/* Copyright 2013-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,13 @@
 
 #include "widgets/PageContainer.h"
 #include <pages/modplatform/VanillaPage.h>
+#include <pages/modplatform/atlauncher/AtlPage.h>
+#include <pages/modplatform/ftb/FtbPage.h>
 #include <pages/modplatform/legacy_ftb/Page.h>
-#include <pages/modplatform/twitch/TwitchPage.h>
+#include <pages/modplatform/flame/FlamePage.h>
 #include <pages/modplatform/ImportPage.h>
+#include <pages/modplatform/technic/TechnicPage.h>
+
 
 
 NewInstanceDialog::NewInstanceDialog(const QString & initialGroup, const QString & url, QWidget *parent)
@@ -120,13 +124,17 @@ void NewInstanceDialog::accept()
 QList<BasePage *> NewInstanceDialog::getPages()
 {
     importPage = new ImportPage(this);
-    twitchPage = new TwitchPage(this);
+    flamePage = new FlamePage(this);
+    auto technicPage = new TechnicPage(this);
     return
     {
         new VanillaPage(this),
         importPage,
+        new AtlPage(this),
+        flamePage,
+        new FtbPage(this),
         new LegacyFTB::Page(this),
-        twitchPage
+        technicPage
     };
 }
 
@@ -163,6 +171,14 @@ void NewInstanceDialog::setSuggestedIconFromFile(const QString &path, const QStr
 
     //Hmm, for some reason they can be to small
     ui->iconButton->setIcon(QIcon(path));
+}
+
+void NewInstanceDialog::setSuggestedIcon(const QString &key)
+{
+    auto icon = MMC->icons()->getIcon(key);
+    importIcon = false;
+
+    ui->iconButton->setIcon(icon);
 }
 
 InstanceTask * NewInstanceDialog::extractTask()

@@ -1,4 +1,4 @@
-/* Copyright 2013-2019 MultiMC Contributors
+/* Copyright 2013-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@
 #include "dialogs/SkinUploadDialog.h"
 #include "tasks/Task.h"
 #include "minecraft/auth/YggdrasilTask.h"
+#include "minecraft/services/SkinDelete.h"
 
 #include "MultiMC.h"
 
@@ -141,7 +142,6 @@ void AccountListPage::updateButtonStates()
 
     ui->actionRemove->setEnabled(selection.size() > 0);
     ui->actionSetDefault->setEnabled(selection.size() > 0);
-    //ui->actionUploadSkin->setEnabled(selection.size() > 0);
 
     if(m_accounts->activeAccount().get() == nullptr) {
         ui->actionNoDefault->setEnabled(false);
@@ -179,15 +179,3 @@ void AccountListPage::addAccount(const QString &errMsg)
         job->start();
     }
 }
-
-/*void AccountListPage::on_actionUploadSkin_triggered()
-{
-    QModelIndexList selection = ui->listView->selectionModel()->selectedIndexes();
-    if (selection.size() > 0)
-    {
-        QModelIndex selected = selection.first();
-        MojangAccountPtr account = selected.data(MojangAccountList::PointerRole).value<MojangAccountPtr>();
-        SkinUploadDialog dialog(account, this);
-        dialog.exec();
-    }
-}*/

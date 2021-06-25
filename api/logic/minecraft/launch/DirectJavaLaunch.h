@@ -1,4 +1,4 @@
-/* Copyright 2013-2019 MultiMC Contributors
+/* Copyright 2013-2021 MultiMC Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@
 #include <LoggedProcess.h>
 #include <minecraft/auth/AuthSession.h>
 
+#include "MinecraftServerTarget.h"
+
 class DirectJavaLaunch: public LaunchStep
 {
     Q_OBJECT
@@ -38,6 +40,12 @@ public:
     {
         m_session = session;
     }
+
+    void setServerToJoin(MinecraftServerTargetPtr serverToJoin)
+    {
+        m_serverToJoin = std::move(serverToJoin);
+    }
+
 private slots:
     void on_state(LoggedProcess::State state);
 
@@ -45,5 +53,6 @@ private:
     LoggedProcess m_process;
     QString m_command;
     AuthSessionPtr m_session;
+    MinecraftServerTargetPtr m_serverToJoin;
 };
 
